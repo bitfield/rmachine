@@ -8,11 +8,10 @@ The 32-bit version of the R-machine (abbreviated *TRM32*) has the following 32-b
 
 | ID | Name    | Purpose |
 | -- | --------| ------- |
-| 000 | `x0`    | Always zero |
-| 001 | `ra`    | Return address |
-| 010 | `sp`    | Stack pointer |
-| 011 - 110 | `a0`-`a3` | User registers |
-| 111 | `pc`    | Program counter |
+| 0000 | `x0` | Always zero |
+| 0001 - 1101 | `a0`-`a13` | User registers |
+| 1110 | `ra`    | Return address |
+| 1111 | `sp`    | Stack pointer |
 
 # Instruction encoding
 
@@ -23,15 +22,17 @@ Instructions have the following format:
 | Bits    | Subfield |
 | --------| ------- |
 | 0-4     | Opcode |
-| 5-7     | Destination register ID (*rd*) |
-| 8-10    | Source register 1 ID (*rs1*) |
-| 11-13   | Source register 2 ID (*rs2*) |
-| 14-31   | Immediate value (*imm*) |
+| 5-8     | Destination register ID (*rd*) |
+| 9-12    | Source register 1 ID (*rs1*) |
+| 13-16   | Source register 2 ID (*rs2*) |
+| 17-31   | Immediate value (*imm*) |
 
 The instructions are as follows:
 
 | Opcode  | Instruction | Description |
 | --------| ------- |-----|
+| 00000 | - | Invalid instruction |
+| 00001 | LI | Set *rd* to *imm* |
 | 00000 | ADD | Add *imm* to *rs1*+*rs2* |
 | 00000 | AND | Bitwise AND *rs1* with *rs2* |
 | 00000 | ANDI | Bitwise AND *rs1* with *imm* |
@@ -51,7 +52,6 @@ The instructions are as follows:
 | 00000 | BGE | Conditional branch to `pc`+*imm* if *rs1* >= *rs2* |
 | 00000 | PUSH | Push value in *rs1* to stack, adjusting *sp* |
 | 00000 | POP | Move value from stack to *rd*, adjusting *sp* |
-| 00000 | LI | Set *rd* to *imm* |
 | 00000 | LOAD | Copy value from memory address *imm*+*rs1*+*rs2* |
 | 00000 | STORE | Copy value from *rs2* to memory address *imm*+*rs1*+*rs2* |
 | 00000 | ECALL | Make a call to the surrounding execution environment |
@@ -82,11 +82,14 @@ Print the string "hello world" to the serial device:
     bne a1, a2, loop    ; loop until end
     ebreak              ; exit
 
-.helloworld 
+.helloworld
     data "Hello world!"
 ```
 
 # Notes
 
+https://riscv.org/wp-content/uploads/2017/05/riscv-spec-v2.2.pdf
+
 https://marz.utk.edu/my-courses/cosc230/book/example-risc-v-assembly-programs/
 
+https://users.sussex.ac.uk/~mfb21/compilers/slides/11-handout.pdf
